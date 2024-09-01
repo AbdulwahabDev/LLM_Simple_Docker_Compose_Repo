@@ -1,0 +1,152 @@
+
+services: 
+
+    ## Python
+    #  Fast API 
+    # rag_app:
+    #     build:
+    #         context: backend/python/
+    #         dockerfile: simple_fastAPI/app/Dockerfile
+    #     env_file: backend/python/simple_fastAPI/app/.env.local
+    #     ports: 
+    #         - '9876:9876'         
+    #     networks:
+    #         - myAppNetwork
+
+    # #  LLM inference  
+    # vllm:
+    #     build:
+    #         context: backend/python/vllm/docker/
+    #         dockerfile: Dockerfile
+    #     env_file: backend/python/vllm/docker/.env.local
+    #     volumes: 
+    #         - ./backend/python/vllm/docker/vllm/vllm_data:/root/.cache/huggingface
+    #     ports: 
+    #         - '8989:8080'         
+    #     networks:
+    #         - myAppNetwork
+
+    ## Database
+    # SQL
+    # pgsql:
+    #     build:
+    #         context: backend/database/PostgreSQL/docker/
+    #         dockerfile: Dockerfile
+    #     env_file: backend/database/PostgreSQL/docker/.env.local
+    #     ports: 
+    #         - '5321:5432'        
+    #     volumes: 
+    #         - ./backend/database/PostgreSQL/docker/volumes/postgresql_data:/var/lib/postgresql/data
+    #     networks:
+    #         - myAppNetwork
+
+    # NO SQL 
+    qdrant_db:
+        build:
+            context: backend/database/qdrant/docker/
+            dockerfile: Dockerfile
+        env_file: backend/database/qdrant/docker/.env.local
+        ports: 
+            - "6333:6333"
+            - "6334:6334"   
+        volumes:
+            - ./backend/database/qdrant/docker/volumes/qdrant_data:/qdrant/storage
+        networks:
+            - myAppNetwork
+
+    # redis_db:
+    #     build:
+    #         context: backend/database/redis/docker/
+    #         dockerfile: Dockerfile
+    #     env_file: backend/database/redis/docker/.env.local
+    #     ports: 
+    #         - '6379:6379'      
+    #     volumes:
+    #         - ./backend/database/redis/docker/volumes/redis_data:/redis/storage   
+    #     networks:
+    #         - myAppNetwork
+
+    ## Go
+    ollama:
+        image: ollama/ollama:0.3.6
+        # build:
+        #     context: backend/Go/ollama/docker/
+        #     dockerfile: Dockerfile 
+        env_file: backend/Go/ollama/docker/.env.local
+        mem_limit: 10g
+        ports:
+            - 11434:11434
+        volumes: 
+            - ./backend/Go/ollama/docker/ollama/ollama_data:/root/.ollama  
+            - ./backend/Go/ollama/docker/ollama/ollama_data:/output   
+        pull_policy: always
+        tty: true
+        restart: always
+        networks:
+            - myAppNetwork  
+        devices: 
+            - /dev/kfd
+            - /dev/dri
+        # deploy:
+        #     resources:
+        #         reservations:
+        #             devices: 
+        #                 - /dev/kfd
+                        # - driver: ''
+                        # - count: all
+                        # - capabilities: ['']
+
+
+    ## Svelte
+    # open-webui: 
+    #     image: ghcr.io/open-webui/open-webui:main
+    #     pull_policy: always
+    #     ports:
+    #     - 3000:8080
+    #     volumes:
+    #         - ./backend/Svelte/open-webui/docker/volumes/open_webui_data:/app/backend/data  
+    #     restart: unless-stopped
+    #     networks:
+    #     - myAppNetwork
+    #     depends_on:
+    #     - ollama      
+    #     environment:
+    #     - '/ollama/api=http://ollama:11434/api'
+    #     - 'OLLAMA_BASE_URL=http://ollama:11434'
+    #     # - 'OPENAI_API_BASE_URLS=${OPENAI_API_BASE_URLS}'
+    #     # - 'OPENAI_API_KEYS=${OPENAI_API_KEYS}'      
+    #     extra_hosts:
+    #         - host.docker.internal:host-gateway
+
+    anythingllm:
+        build:
+            context: frontend/JavaScript/Anythingllm/docker/
+            dockerfile: Dockerfile
+        # env_file: frontend/JavaScript/Anythingllm/docker/.env.local
+        ports: 
+            - "3001:3001"  
+        volumes:
+            - ./frontend/JavaScript/Anythingllm/docker/volumes/Anythingllm_data:/app/server/storage
+        networks:
+            - myAppNetwork
+
+
+    # open-webui:
+    #     image: ghcr.io/open-webui/open-webui:main
+    #     # build:
+    #     #     context: backend/Svelte/open-webui/docker/
+    #     #     dockerfile: Dockerfile
+    #     env_file: backend/Svelte/open-webui/docker/.env.local
+    #     ports: 
+    #         - '3000:8080'      
+    #     volumes:
+    #         - ./backend/Svelte/open-webui/docker/volumes/open_webui_data:/app/backend/data   
+    #     networks:
+    #         - myAppNetwork
+        
+
+   
+networks:
+    myAppNetwork:
+        driver: bridge
+  

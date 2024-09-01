@@ -1,0 +1,1 @@
+redis-server --requirepass $REDIS_PASSWORD --bind $REDIS_BIND --port $REDIS_PORT

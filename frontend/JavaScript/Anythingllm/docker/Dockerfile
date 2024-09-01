@@ -1,0 +1,1 @@
+FROM mintplexlabs/anythingllm:1.2

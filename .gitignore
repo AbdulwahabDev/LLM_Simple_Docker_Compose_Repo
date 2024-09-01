@@ -1,0 +1,25 @@
+.env/*
+
+backend/python/digitalocean_registry.env
+
+
+# docker volumes
+backend/database/PostgreSQL/docker/volumes/postgresql_data/*
+backend/database/qdrant/docker/volumes/qdrant_data/*
+backend/Go/ollama/docker/ollama/ollama_data/*
+backend/python/vllm/docker/vllm/vllm_data/*
+backend/Svelte/open-webui/docker/volumes/open_webui_data/*
+frontend/JavaScript/Anythingllm/docker/volumes/Anythingllm_data/*
+
+
+
+
+
+
+# python no needed 
+*.pyc
+*-checkpoint.ipynb
+
+
+
+Archive.zip
